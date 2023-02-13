@@ -1,28 +1,20 @@
-import settings, logging
+import settings, logging, re
 from khl import Bot, Message
 from function import chat
-from khl.command import Rule, CommandManager
-
-
-# class MyCommandManager(CommandManager):
-#
-#     def __call__(self,  *args, **kwargs):
-#         prefixes = ('!',),
-#         super().__call__(prefixes, *args, **kwargs)
-#
-#
-# Bot.command = MyCommandManager()
+from khl.command import Rule
 
 bot = Bot(token=settings.token)
 
 
-@bot.command(name='hello', rules=[Rule.is_bot_mentioned(bot)], prefixes=('/', ))
-async def world(msg: Message, mention_str: str):
-    await msg.reply(f'world! I am mentioned with {mention_str}')
-
-@bot.command(name='', rules=[Rule.is_bot_mentioned(bot)], regex=r'(.+)')
-async def world(msg: Message, mention_str: str):
-    await msg.reply(f'world! I am mentioned with {mention_str}')
+@bot.command(rules=[Rule.is_bot_mentioned(bot)], regex=r'(.+)')
+async def receive(msg: Message, mention_str: str):
+    message = re.sub('\s*\(met\).*?\(met\)\s*', '', msg.content)
+    res = ""
+    if re.search(f'{settings.wildcard_character}help',message.lower()):
+        res = settings.kook_rob_help
+    else:
+        res = await chat.chatgpt(message)
+    await msg.reply(res)
 
 
 if __name__ == '__main__':
