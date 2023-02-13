@@ -16,7 +16,7 @@ async def receive(msg: Message, mention_str: str):
         res = settings.kook_rob_help
     else:
         res = await chat.chatgpt(message)
-    await msg.reply(res)
+    await msg.reply(str(res))
 
 
 if __name__ == '__main__':
