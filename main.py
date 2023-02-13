@@ -10,7 +10,9 @@ bot = Bot(token=settings.token)
 async def receive(msg: Message, mention_str: str):
     message = re.sub('\s*\(met\).*?\(met\)\s*', '', msg.content)
     res = ""
-    if re.search(f'{settings.wildcard_character}help',message.lower()):
+    if not msg.content.strip():
+        res = await chat.chatgpt("自我介绍")
+    elif re.search(f'{settings.wildcard_character}help',message.lower()):
         res = settings.kook_rob_help
     else:
         res = await chat.chatgpt(message)
